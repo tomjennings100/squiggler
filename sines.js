@@ -28,21 +28,26 @@ function approximateLineSegments(svg, style) {
     svg.appendChild(group);
 }
 
+var controlsGood = [[0,         0],
+                    [0.5,       0.5],
+                    [1,         1],
+                    [Math.PI/2, 1]];
+
 function approximateCubicBezier(svg, controls, style) {
     var path = document.createElementNS("http://www.w3.org/2000/svg", "path"),
         data;
     
     //Bezier control points:
     //https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths#Curve_commands
-    var controlStart = controls[0], 
-        control1     = controls[1], 
-        control2     = controls[2], 
-        controlEnd   = controls[3],
+    var controlStart = controls[0], // [0, 0]
+        control1     = controls[1], // [0.5, 0.5]
+        control2     = controls[2], // [1, 1]
+        controlEnd   = controls[3], // [pi/2, 1]
         x, y,
     	x1, y1,
     	x2, y2,
-        quarterX = controlEnd[0],
-        startX = -(4 * quarterX),
+        quarterX = controlEnd[0], // pi/2
+        startX = -(4 * quarterX), // (pi/2)*4
         negateY = false;
     
     function negateYs() {
@@ -51,8 +56,8 @@ function approximateCubicBezier(svg, controls, style) {
     
     for(x = startX; x<6;) {
         if(x === startX) {
-            y = controlStart[1];
-            x1 = x + control1[0];
+            y = controlStart[1]; 0
+            x1 = x + control1[0]; 
             y1 = control1[1];
             
             negateYs();
@@ -97,10 +102,7 @@ var sinesGroup = document.querySelector('#sines');
 
 approximateLineSegments(sinesGroup, 'stroke:blue;');
 
-var controlsGood = [[0,         0],
-                    [0.5,       0.5],
-                    [1,         1],
-                    [Math.PI/2, 1]];
+
 var controlsBetter = [[0,                    0],
                       [0.512286623256592433, 0.512286623256592433],
                       [1.002313685767898599, 1],
