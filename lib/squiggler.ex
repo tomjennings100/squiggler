@@ -24,7 +24,7 @@ defmodule Squiggler do
 
   def load_image do 
     Logger.debug('Loading image...')
-    {:ok, image} = Imagineer.load('./image1.png')
+    {:ok, image} = Imagineer.load('./image2.png')
     Logger.debug('Image loaded...')
     image
   end
@@ -32,7 +32,7 @@ defmodule Squiggler do
   def convert_to_bw(image) do
     Logger.debug('converting to black and white...')
     IO.puts('Height: #{image.height} \nWidth: #{image.width}\nRatio:#{image.width/image.height}')
-    Enum.take_every(image.pixels, 10)
+    Enum.take_every(image.pixels, 5)
     |> Enum.map(fn row -> 
          Enum.map(row, fn {r,g,b} -> div((r + g + b), 3) end)
       end)
@@ -44,27 +44,30 @@ defmodule Squiggler do
     |> Enum.map(fn {row, row_idx} ->
       row_data = row 
       |> Enum.with_index
-      |> Enum.reduce("", fn({lum, col_idx}, acc) ->  acc <> " " <> gen_sine_bezier(lum, row_idx, col_idx) end)
-      ~s(<path d="#{row_data}" style="fill:none;stroke-width:0.2;stroke-linecap:round;stroke-miterlimit:10;stroke-dasharray:none"/>)
+      |> Enum.reduce("", fn({lum, col_idx}, acc) ->  acc <> " " <> gen_sine_bezier(lum, row_idx * 50, col_idx * 10) end)
+      ~s(<path d="#{row_data}" style="fill:none;stroke-width:1.2;"/>)
     end)
   end
 
   def gen_sine_bezier(lum, row_idx, col_idx) do
-    ~s( M  #{col_idx}, #{row_idx * 10}
-        C #{col_idx}, #{(row_idx * 10) + div(lum, 5)}
-          #{(col_idx) + 10}, #{(row_idx * 10) + div(lum, 5)}
-          #{(col_idx + 10) + 10}, #{(row_idx * 10)}
+    amplitude = 2
+    ~s( M #{col_idx}, #{row_idx}
+        C #{col_idx}, #{row_idx}
+          #{col_idx + 5}, #{row_idx + (255 - lum)/3}
+          #{col_idx + 5}, #{row_idx}
+        S #{col_idx + 10}, #{row_idx + (255 - lum)/3}
+          #{col_idx + 10}, #{row_idx}
         )
   end
 
   def build_svg(squiggles) do
         {:svg,
            %{
-             viewBox: "0 0 554 491",
+             viewBox: "0 0 5540 4910",
              xmlns: "http://www.w3.org/2000/svg",
-             style: "font-style:normal;font-weight:normal;font-size:12px;font-family:Dialog;color-interpolation:auto;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto",
-             width: 554,
-             height: 291,
+             style: "fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1;",
+             width: 5540,
+             height: 2910,
              "xml:space": "preserve"
            },
            squiggles}
