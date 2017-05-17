@@ -24,7 +24,7 @@ defmodule Squiggler do
 
   def load_image do 
     Logger.debug('Loading image...')
-    {:ok, image} = Imagineer.load('./image2.png')
+    {:ok, image} = Imagineer.load('./image5.png')
     Logger.debug('Image loaded...')
     image
   end
