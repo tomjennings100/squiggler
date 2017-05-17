@@ -1,6 +1,6 @@
 # Squiggler
 
-**TODO: Add description**
+**Create a svg of squiggles from a png file. **
 
 ## Installation
 
